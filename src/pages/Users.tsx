@@ -24,6 +24,7 @@ const Users: React.FC = () => {
   const queryClient = useQueryClient();
   const { data: response, isLoading, error } = useGetUsers();
   const users = response?.data;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const currentUser = "Test";
 
   const [open, setOpen] = useState(false);
