@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint
@@ -45,11 +49,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Install system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Generate BDD specs
+        run: npx bddgen
+
+      - name: Run Playwright tests
+        run: npx playwright test
 
       - name: Upload Playwright report
         if: always()
@@ -58,3 +77,15 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo "## E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Browser | Chromium |" >> $GITHUB_STEP_SUMMARY
+          echo "| Node | 24 |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cache | ${{ steps.playwright-cache.outputs.cache-hit == 'true' && 'HIT ✅' || 'MISS ❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Workers | 1 (sequential) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Retries | ${{ github.ref == 'refs/heads/main' && '1' || '0' }} |" >> $GITHUB_STEP_SUMMARY
