@@ -87,7 +87,7 @@ const Products: React.FC = () => {
       headerName: "Price",
       flex: 1,
       minWidth: 120,
-      valueFormatter: (value) => `$${Number(value).toFixed(2)}`,
+      valueFormatter: (value) => `$${value}`
     },
     {
       field: "category",

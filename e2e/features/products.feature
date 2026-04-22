@@ -12,7 +12,7 @@ Feature: Products Management
         And I click the save product button
         Then the dialog should be closed
         And I should see "Test Widget" in the products grid
-        And the price for "Test Widget" should display as "$11.00"
+        And the price for "Test Widget" should display as "$11"
         And the category for "Test Widget" should display as "Electronics"
 
     Scenario: Show validation error when submitting incomplete form
