@@ -1,32 +1,37 @@
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
 
-const { Given, When, Then } = createBdd();
+const { Given, When, Then, Before } = createBdd();
 
-Given('I am on the login page', async ({ page }) => {
-    await page.goto('/login');
+let loginPage: LoginPage;
+
+Before(async ({ page }) => {
+  loginPage = new LoginPage(page);
 });
 
-When('I enter valid credentials', async ({ page }) => {
-    await page.getByTestId('login-username').fill('admin');
-    await page.getByTestId('login-password').fill('password');
+Given('I am on the login page', async () => {
+  await loginPage.goto();
 });
 
-When('I enter invalid credentials', async ({ page }) => {
-    await page.getByTestId('login-username').fill('wrong');
-    await page.getByTestId('login-password').fill('wrong');
+When('I enter valid credentials', async () => {
+  await loginPage.fillUsername('admin');
+  await loginPage.fillPassword('password');
 });
 
-When('I click the submit button', async ({ page }) => {
-    await page.getByTestId('login-submit').click();
+When('I enter invalid credentials', async () => {
+  await loginPage.fillUsername('wrong');
+  await loginPage.fillPassword('wrong');
 });
 
-Then('I should be redirected to the dashboard', async ({ page }) => {
-    await expect(page).toHaveURL('/');
-    await expect(page.getByTestId('dashboard-title')).toHaveText('Dashboard');
+When('I click the submit button', async () => {
+  await loginPage.clickSubmit();
 });
 
-Then('I should see an error message', async ({ page }) => {
-    // Fix Capitalization when asserting error message
-    await expect(page.getByTestId('login-error')).toHaveText('Invalid credentials');
+Then('I should be redirected to the dashboard', async () => {
+  await loginPage.assertRedirectedToDashboard();
+});
+
+Then('I should see an error message', async () => {
+    // Fix the capitalization for error message assertion (now located on loginPage.ts Page Object Model)
+  await loginPage.assertErrorMessage();
 });
