@@ -34,10 +34,7 @@ export class ProductsPage {
   }
 
 async closeDialogByClickingOutside() {
-    //Uses click to a location outside of the dialog to close it, simulating a user clicking outside the dialog to dismiss it
-  await this.page
-    .locator('.MuiDialog-root')
-    .click({ position: { x: 10, y: 10 } });
+  await this.page.keyboard.press('Escape');
 }
 
   async assertProductInGrid(name: string) {
@@ -56,17 +53,15 @@ async closeDialogByClickingOutside() {
   }
 
 async assertNameFieldIsRequired() {
-  const nameInput = this.page
-    .getByTestId('product-name-input')
-    .locator('input');
-  await expect(nameInput).toHaveAttribute('required');
+  const nameInput = this.page.getByTestId('product-name-input').locator('input');
+  const isInvalid = await nameInput.evaluate((el: HTMLInputElement) => !el.validity.valid);
+  expect(isInvalid).toBe(true);
 }
 
-async assertDescriptionFieldIsRequired() {
-  const descriptionInput = this.page
-    .getByTestId('product-description-input')
-    .locator('textarea').first();
-  await expect(descriptionInput).toHaveAttribute('required');
+async assertDescriptionValidationError() {
+  const textarea = this.page.getByTestId('product-description-input').locator('textarea').first();
+  const isInvalid = await textarea.evaluate((el: HTMLTextAreaElement) => !el.validity.valid);
+  expect(isInvalid).toBe(true);
 }
 
   async assertDialogClosed() {

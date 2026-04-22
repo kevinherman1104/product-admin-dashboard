@@ -32,6 +32,5 @@ Then('I should be redirected to the dashboard', async () => {
 });
 
 Then('I should see an error message', async () => {
-    // Fix the capitalization for error message assertion (now located on loginPage.ts Page Object Model)
   await loginPage.assertErrorMessage();
 });

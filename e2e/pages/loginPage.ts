@@ -32,7 +32,6 @@ export class LoginPage {
   }
 
   async assertErrorMessage() {
-    // Fix the capitalization for error message assertion (Previously Located on login.steps.ts)
     await expect(this.page.getByTestId('login-error')).toHaveText('Invalid credentials');
   }
 }

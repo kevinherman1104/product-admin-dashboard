@@ -50,7 +50,7 @@ Then('the price for {string} should display as {string}', async ({}: object, nam
 });
 
 Then('I should see a Description field validation error', async () => {
-  await productsPage.assertDescriptionFieldIsRequired();
+  await productsPage.assertDescriptionValidationError();
 });
 
 Then('the dialog should be closed', async () => {
