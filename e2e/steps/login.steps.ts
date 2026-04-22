@@ -1,5 +1,5 @@
 import { createBdd } from 'playwright-bdd';
-import { LoginPage } from '../pages/LoginPage.ts';
+import { LoginPage } from '../pages/loginPage.ts';
 
 const { Given, When, Then, Before } = createBdd();
 
