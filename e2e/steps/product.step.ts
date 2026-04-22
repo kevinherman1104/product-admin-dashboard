@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { createBdd } from 'playwright-bdd';
-import { ProductsPage } from '../pages/productPage';
+import { ProductsPage } from '../pages/productPage.ts';
 
 const { Given, When, Then, Before } = createBdd();
 
