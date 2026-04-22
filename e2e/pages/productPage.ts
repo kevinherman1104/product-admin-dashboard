@@ -52,6 +52,11 @@ async closeDialogByClickingOutside() {
     await expect(row).toContainText(expectedPrice);
   }
 
+  async assertCategoryForProduct(name: string, expectedCategory: string) {
+    const row = this.page.locator('[role="row"]', { hasText: name });
+    await expect(row).toContainText(expectedCategory);
+  }
+
 async assertNameFieldIsRequired() {
   const nameInput = this.page.getByTestId('product-name-input').locator('input');
   const isInvalid = await nameInput.evaluate((el: HTMLInputElement) => !el.validity.valid);

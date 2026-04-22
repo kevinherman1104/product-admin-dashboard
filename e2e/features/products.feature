@@ -12,13 +12,8 @@ Feature: Products Management
         And I click the save product button
         Then the dialog should be closed
         And I should see "Test Widget" in the products grid
-        And the price for "Test Widget" should display as "$11"
-
-    Scenario: Saved product displays price with correct dollar format and 1.1 multiplier applied
-        When I click the add product button
-        And I fill in the product details with name "Price Test", price "10", category "Electronics" and description "Testing price calculation"
-        And I click the save product button
-        Then the price for "Price Test" should display as "$11"
+        And the price for "Test Widget" should display as "$11.00"
+        And the category for "Test Widget" should display as "Electronics"
 
     Scenario: Show validation error when submitting incomplete form
         When I click the add product button

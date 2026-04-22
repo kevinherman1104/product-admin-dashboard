@@ -49,6 +49,10 @@ Then('the price for {string} should display as {string}', async ({}: object, nam
   await productsPage.assertPriceForProduct(name, price);
 });
 
+Then('the category for {string} should display as {string}', async ({}: object, name: string, category: string) => {
+  await productsPage.assertCategoryForProduct(name, category);
+});
+
 Then('I should see a Description field validation error', async () => {
   await productsPage.assertDescriptionValidationError();
 });
