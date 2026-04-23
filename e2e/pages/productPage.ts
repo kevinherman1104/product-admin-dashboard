@@ -5,11 +5,12 @@ export class ProductsPage {
 
   async goto() {
     await this.page.goto('/products');
-    await this.page.waitForLoadState('networkidle');
+    await expect(this.page.getByRole('heading', { name: 'Products' })).toBeVisible();
   }
 
   async clickAddProduct() {
     await this.page.getByTestId('add-product-button').click();
+    await expect(this.page.getByRole('dialog')).toBeVisible();
   }
 
   async fillName(name: string) {
@@ -30,54 +31,47 @@ export class ProductsPage {
 
   async clickSave() {
     await this.page.getByTestId('save-product-button').click();
-    await this.page.waitForLoadState('networkidle');
   }
 
-async closeDialogByClickingOutside() {
-  await this.page.keyboard.press('Escape');
-}
+  async clickCancel() {
+    await this.page.getByRole('button', { name: 'Cancel' }).click();
+  }
 
   async assertProductInGrid(name: string) {
-    const grid = this.page.locator('[role="grid"]');
-    await expect(grid).toContainText(name);
+    await expect(this.page.locator('[role="row"]', { hasText: name }).first()).toBeVisible();
   }
 
   async assertProductNotInGrid(name: string) {
-    const grid = this.page.locator('[role="grid"]');
-    await expect(grid).not.toContainText(name);
+    await expect(this.page.locator('[role="row"]', { hasText: name })).toHaveCount(0);
   }
 
   async assertPriceForProduct(name: string, expectedPrice: string) {
-    const row = this.page.locator('[role="row"]', { hasText: name });
+    const row = this.page.locator('[role="row"]', { hasText: name }).first();
     await expect(row).toContainText(expectedPrice);
   }
 
   async assertCategoryForProduct(name: string, expectedCategory: string) {
-    const row = this.page.locator('[role="row"]', { hasText: name });
+    const row = this.page.locator('[role="row"]', { hasText: name }).first();
     await expect(row).toContainText(expectedCategory);
   }
 
-async assertNameFieldIsRequired() {
+  async assertNameFieldIsRequired() {
   const nameInput = this.page.getByTestId('product-name-input').locator('input');
   const isInvalid = await nameInput.evaluate((el: HTMLInputElement) => !el.validity.valid);
   expect(isInvalid).toBe(true);
 }
 
-async assertDescriptionValidationError() {
-  const textarea = this.page.getByTestId('product-description-input').locator('textarea').first();
-  const isInvalid = await textarea.evaluate((el: HTMLTextAreaElement) => !el.validity.valid);
-  expect(isInvalid).toBe(true);
-}
+  async assertDescriptionFieldIsRequired() {
+    const textarea = this.page.getByTestId('product-description-input').locator('textarea').first();
+    const isInvalid = await textarea.evaluate((el: HTMLTextAreaElement) => !el.validity.valid);
+    expect(isInvalid).toBe(true);
+  }
 
   async assertDialogClosed() {
-    await expect(
-      this.page.getByText('Add New Product')
-    ).not.toBeVisible();
+    await expect(this.page.getByRole('dialog')).not.toBeVisible();
   }
 
   async assertDialogOpen() {
-    await expect(
-      this.page.getByText('Add New Product')
-    ).toBeVisible();
+    await expect(this.page.getByRole('dialog')).toBeVisible();
   }
 }

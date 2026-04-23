@@ -23,7 +23,6 @@ export class LoginPage {
     await this.fillUsername('admin');
     await this.fillPassword('password');
     await this.clickSubmit();
-    await this.page.waitForLoadState('networkidle');
   }
 
   async assertRedirectedToDashboard() {
